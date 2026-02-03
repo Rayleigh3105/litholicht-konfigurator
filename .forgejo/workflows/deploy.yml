@@ -34,6 +34,9 @@ jobs:
           build-args: |
             VITE_ODOO_URL=${{ secrets.VITE_ODOO_URL }}
             VITE_ODOO_API_KEY=${{ secrets.VITE_ODOO_API_KEY }}
+            VITE_ODOO_DB=${{ secrets.VITE_ODOO_DB }}
+            VITE_ODOO_LOGIN=${{ secrets.VITE_ODOO_LOGIN }}
+            VITE_DEMO_MODE=false
           tags: |
             git.tecmaxx.de/mamotec/litholicht-konfigurator/app:latest
             git.tecmaxx.de/mamotec/litholicht-konfigurator/app:${{ github.sha }}
