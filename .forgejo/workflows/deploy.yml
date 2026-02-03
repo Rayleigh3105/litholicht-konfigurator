@@ -10,32 +10,7 @@ jobs:
     runs-on: ubuntu-latest-mo
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Deploy via SCP
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT }}
-          source: "dist/*"
-          target: ${{ secrets.VPS_TARGET_PATH }}
-          strip_components: 1
-
-      - name: Reload nginx
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -43,4 +18,8 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT }}
           script: |
-            sudo systemctl reload nginx || true
+            cd /opt/litholicht-konfigurator || git clone https://git.tecmaxx.de/mamotec/litholicht-konfigurator.git /opt/litholicht-konfigurator
+            cd /opt/litholicht-konfigurator
+            git pull origin main
+            docker compose down || true
+            docker compose up -d --build
