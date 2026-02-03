@@ -3,6 +3,14 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Build arguments for Vite
+ARG VITE_ODOO_URL
+ARG VITE_ODOO_API_KEY
+
+# Set as environment variables for build
+ENV VITE_ODOO_URL=$VITE_ODOO_URL
+ENV VITE_ODOO_API_KEY=$VITE_ODOO_API_KEY
+
 # Copy package files
 COPY package*.json ./
 
