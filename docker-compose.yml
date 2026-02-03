@@ -7,8 +7,6 @@ services:
     restart: unless-stopped
     ports:
       - "3000:80"
-    # Optional: Traefik Labels
-    # labels:
-    #   - "traefik.enable=true"
-    #   - "traefik.http.routers.litholicht.rule=Host(`konfigurator.litholicht.de`)"
-    #   - "traefik.http.routers.litholicht.tls.certresolver=letsencrypt"
+    environment:
+      - ODOO_URL=https://litholicht.de
+      - ODOO_API_KEY=${ODOO_API_KEY}

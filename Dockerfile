@@ -32,13 +32,18 @@ RUN npm run build
 # Production stage
 FROM nginx:alpine
 
-# Copy custom nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy nginx config template
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 
 # Copy built files from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
+# Environment variables for nginx proxy (set at runtime)
+ENV ODOO_URL=https://litholicht.de
+ENV ODOO_API_KEY=
+
 # Expose port
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+# Use envsubst to replace variables in nginx config at startup
+CMD ["/bin/sh", "-c", "envsubst '${ODOO_URL} ${ODOO_API_KEY}' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
