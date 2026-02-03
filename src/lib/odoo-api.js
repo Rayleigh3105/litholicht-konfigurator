@@ -13,7 +13,8 @@ import { PRODUCTS_CONFIG } from './products-config.js';
 
 // Konfiguration
 const ODOO_URL = import.meta.env.VITE_ODOO_URL || 'https://litholicht.de';
-const API_BASE = import.meta.env.DEV ? '/odoo-api' : ODOO_URL;
+// Immer /odoo-api verwenden - in Dev proxied Vite, in Prod proxied nginx
+const API_BASE = '/odoo-api';
 const API_KEY = import.meta.env.VITE_ODOO_API_KEY || '';
 const ODOO_DB = import.meta.env.VITE_ODOO_DB || '';
 const ODOO_LOGIN = import.meta.env.VITE_ODOO_LOGIN || '';
