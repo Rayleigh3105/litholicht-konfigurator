@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: docker
+    runs-on: ubuntu-latest-mo
 
     steps:
       - name: Checkout code
