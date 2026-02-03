@@ -1,0 +1,17 @@
+{
+  "name": "litholicht-konfigurator",
+  "version": "1.0.0",
+  "description": "LithoLicht 3D Konfigurator - Standalone Frontend",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "sass": "^1.69.0"
+  }
+}

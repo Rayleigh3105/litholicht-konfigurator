@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LithoLicht 3D Konfigurator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/src/styles/configurator.scss">
+</head>
+<body>
+    <div id="litho-configurator" class="litho-configurator">
+        <!-- Header -->
+        <div class="config-header">
+            <div class="container">
+                <h1>Gestalte dein Licht</h1>
+                <p>Lade dein Foto hoch und sieh es live auf deinem Wunschprodukt</p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="config-main">
+            <div class="container-fluid">
+                <div class="row g-0">
+                    <!-- 3D Preview -->
+                    <div class="col-lg-7 col-xl-8">
+                        <div class="preview-container" id="preview-container">
+                            <div class="preview-placeholder" id="preview-placeholder">
+                                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <rect x="3" y="3" width="18" height="18" rx="3"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <path d="M21 15l-5-5L5 21"/>
+                                </svg>
+                                <p>Lade ein Foto hoch um<br/>die 3D-Vorschau zu sehen</p>
+                            </div>
+                            <canvas id="three-canvas"></canvas>
+                            <div class="preview-disclaimer">
+                                <i class="fa fa-info-circle"></i>
+                                Simulierte Darstellung – Das Endprodukt weicht ab
+                            </div>
+                            <div class="preview-controls" id="preview-controls">
+                                <button type="button" class="ctrl-btn" data-action="rotate-left" title="Links drehen">
+                                    <i class="fa fa-undo"></i>
+                                </button>
+                                <button type="button" class="ctrl-btn" data-action="rotate-right" title="Rechts drehen">
+                                    <i class="fa fa-repeat"></i>
+                                </button>
+                                <button type="button" class="ctrl-btn" data-action="zoom-in" title="Vergrößern">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                                <button type="button" class="ctrl-btn" data-action="zoom-out" title="Verkleinern">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="ctrl-btn" data-action="reset" title="Zurücksetzen">
+                                    <i class="fa fa-refresh"></i>
+                                </button>
+                                <button type="button" class="ctrl-btn ctrl-light" data-action="toggle-light" title="Licht an/aus">
+                                    <i class="fa fa-lightbulb"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Config Panel -->
+                    <div class="col-lg-5 col-xl-4">
+                        <div class="config-panel" id="config-panel">
+                            <div class="config-steps-wrapper">
+                                <!-- Step 1: Product -->
+                                <div class="config-step" data-step="1">
+                                    <div class="step-header">
+                                        <span class="step-num">1</span>
+                                        <h3>Produkt wählen</h3>
+                                    </div>
+                                    <div class="product-grid" id="product-grid">
+                                        <div class="loading">
+                                            <div class="spinner"></div>
+                                            <span>Produkte laden...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 2: Upload -->
+                                <div class="config-step" data-step="2">
+                                    <div class="step-header">
+                                        <span class="step-num">2</span>
+                                        <h3>Foto hochladen</h3>
+                                    </div>
+                                    <div class="upload-zone" id="upload-zone">
+                                        <input type="file" id="file-input" accept="image/*"/>
+                                        <label for="file-input">
+                                            <i class="fa fa-cloud-upload"></i>
+                                            <span>Klicken oder Bild hierher ziehen</span>
+                                            <small>JPG, PNG bis 10 MB</small>
+                                        </label>
+                                    </div>
+                                    <div class="upload-preview" id="upload-preview">
+                                        <img id="preview-thumb" src="" alt=""/>
+                                        <div class="preview-info">
+                                            <span id="file-name"></span>
+                                            <button type="button" id="btn-remove-image">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 3: Size -->
+                                <div class="config-step" data-step="3">
+                                    <div class="step-header">
+                                        <span class="step-num">3</span>
+                                        <h3>Größe wählen</h3>
+                                    </div>
+                                    <div class="size-grid" id="size-grid">
+                                        <p class="muted">Wähle zuerst ein Produkt</p>
+                                    </div>
+                                </div>
+
+                                <!-- Step 4: Options -->
+                                <div class="config-step" data-step="4" id="step-options">
+                                    <div class="step-header">
+                                        <span class="step-num">4</span>
+                                        <h3>Optionen</h3>
+                                    </div>
+                                    <div class="options-container" id="options-container">
+                                        <!-- Light color -->
+                                        <div class="option-group" id="light-options">
+                                            <label>Lichtfarbe</label>
+                                            <div class="light-btns">
+                                                <button type="button" class="light-btn selected" data-light="warm">
+                                                    <span class="light-dot warm"></span>
+                                                    Warmweiß
+                                                </button>
+                                                <button type="button" class="light-btn" data-light="cool">
+                                                    <span class="light-dot cool"></span>
+                                                    Kaltweiß
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Footer: Price + Cart -->
+                            <div class="config-footer">
+                                <div class="price-display">
+                                    <span class="label">Gesamtpreis</span>
+                                    <span class="price" id="total-price">0,00 EUR</span>
+                                </div>
+                                <button type="button" class="btn-cart" id="btn-add-cart" disabled="disabled">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    <span>In den Warenkorb</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
