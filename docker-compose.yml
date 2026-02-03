@@ -2,14 +2,13 @@ version: '3.8'
 
 services:
   litholicht-konfigurator:
-    build: .
+    image: git.tecmaxx.de/mamotec/litholicht-konfigurator/app:latest
     container_name: litholicht-konfigurator
     restart: unless-stopped
     ports:
       - "3000:80"
-    # Optional: Use with reverse proxy like Traefik or nginx-proxy
+    # Optional: Traefik Labels
     # labels:
     #   - "traefik.enable=true"
     #   - "traefik.http.routers.litholicht.rule=Host(`konfigurator.litholicht.de`)"
-    #   - "traefik.http.routers.litholicht.tls=true"
     #   - "traefik.http.routers.litholicht.tls.certresolver=letsencrypt"

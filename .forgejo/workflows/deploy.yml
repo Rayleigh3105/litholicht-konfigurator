@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: Build & Deploy
 
 on:
   push:
@@ -6,20 +6,55 @@ on:
       - main
 
 jobs:
+  build:
+    runs-on: ubuntu-latest-mo
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Forgejo Registry
+        uses: docker/login-action@v3
+        with:
+          registry: git.tecmaxx.de
+          username: ${{ secrets.FORGEJO_USERNAME }}
+          password: ${{ secrets.FORGEJO_PASSWORD }}
+
+      - name: Build & Push Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/amd64
+          push: true
+          no-cache: true
+          tags: |
+            git.tecmaxx.de/mamotec/litholicht-konfigurator/app:latest
+            git.tecmaxx.de/mamotec/litholicht-konfigurator/app:${{ github.sha }}
+
   deploy:
+    name: Deploy on VPS
+    needs: build
     runs-on: ubuntu-latest-mo
 
     steps:
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
+        uses: https://github.com/appleboy/ssh-action@master
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT }}
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          password: ${{ secrets.DEPLOY_PASSWORD }}
+          command_timeout: 10m
+          script_stop: true
           script: |
-            cd /opt/litholicht-konfigurator || git clone https://git.tecmaxx.de/mamotec/litholicht-konfigurator.git /opt/litholicht-konfigurator
-            cd /opt/litholicht-konfigurator
-            git pull origin main
-            docker compose down || true
-            docker compose up -d --build
+            set -euo pipefail
+
+            echo "${{ secrets.FORGEJO_PASSWORD }}" | docker login git.tecmaxx.de -u "${{ secrets.FORGEJO_USERNAME }}" --password-stdin
+
+            cd /srv/docker/litholicht-konfigurator
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker image prune -f
